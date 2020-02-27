@@ -1,16 +1,18 @@
-# validacion_formularios
+# Temas puntuales del proyecto
+En esta sección aprenderemos:
 
-A new Flutter project.
+- Implementar un Bloc
 
-## Getting Started
+- Uso de formularios con Bloc
 
-This project is a starting point for a Flutter application.
+- Diseño de un login elegante
 
-A few resources to get you started if this is your first Flutter project:
+- InheritedWidget
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- Conectar inputs con Streams
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Validaciones
+
+- Persistencia de los valores de un Bloc después de un HotReload
+
+Este proyecto es bastante ilustrativo en cuanto al uso de StreamTransformers y Bloc. Se trabajará las validaciones y construcción de formularios.
