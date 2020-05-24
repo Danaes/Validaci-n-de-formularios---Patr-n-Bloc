@@ -28,7 +28,7 @@ class ProductProvider {
   }
 
 
-  Future<List<ProductModel>>  getProducts() async {
+  Future<List<ProductModel>> getProducts() async {
 
     final url = '$_url/products.json';
     final resp = await http.get(url);
@@ -45,6 +45,8 @@ class ProductProvider {
       products.add(prodTemp);
 
     });
+
+    print(products);
 
     return products;
 

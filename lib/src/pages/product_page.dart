@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:validacion_formularios/src/models/product_model.dart';
 import 'package:validacion_formularios/src/providers/product_provider.dart';
 import 'package:validacion_formularios/src/utils/utils.dart' as utils;
@@ -10,24 +13,27 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final formkey = GlobalKey<FormState>();
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   final productProvider = ProductProvider();
 
   ProductModel product = ProductModel();
-  bool isToUpdate;
+  bool _isToUpdate;
+  File photo;
 
   @override
   Widget build(BuildContext context) {
 
     final ProductModel prodData = ModalRoute.of(context).settings.arguments;
-    isToUpdate = prodData != null;
-    if ( isToUpdate )  product = prodData;
+    _isToUpdate = prodData != null;
+    if ( _isToUpdate )  product = prodData;
 
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text('Producto'),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.photo_size_select_actual), onPressed: (){}),
-          IconButton(icon: Icon(Icons.camera_alt), onPressed: (){})
+          IconButton(icon: Icon(Icons.photo_size_select_actual), onPressed: _selectPhoto),
+          IconButton(icon: Icon(Icons.camera_alt), onPressed: _takePhoto)
         ],
       ),
       body: SingleChildScrollView(
@@ -37,6 +43,7 @@ class _ProductPageState extends State<ProductPage> {
             key: formkey,
             child: Column(
               children: <Widget>[
+                _photoField(),
                 _nameField(),
                 _priceField(),
                 _availableField(),
@@ -97,7 +104,7 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _sumbitButton() {
 
-    String label = isToUpdate ? 'Actualizar' : 'Crear';
+    String label = _isToUpdate ? 'Actualizar' : 'Crear';
 
     return RaisedButton.icon(
       shape: RoundedRectangleBorder(
@@ -112,15 +119,59 @@ class _ProductPageState extends State<ProductPage> {
 
   }
 
-  void _submit() {
+  void _submit() async {
 
     if (!formkey.currentState.validate()) return;
 
     formkey.currentState.save();
 
-    (product.id == null) ? 
-      productProvider.createProduct(product) :
+    if (product.id == null)
+      productProvider.createProduct(product);
+    else
       productProvider.updateProduct(product);
+
+    showSnackBar('Producto guardado correctamente');
+    Navigator.pushNamed(context, 'home');
+
+  }
+
+  void showSnackBar(String msg){
+
+    final snackbar = SnackBar(
+      content: Text(msg),
+      duration: Duration(milliseconds: 1500),
+    );
+
+    scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  Widget _photoField() {
+
+    if( product.photoUrl != null) return Container();
+
+    return Image(
+      image: AssetImage(photo?.path ?? 'assets/no-image.png'),
+      height: 300.0,
+      fit: BoxFit.cover
+    );
+  }
+
+  _selectPhoto () async {
+
+    photo = await ImagePicker.pickImage(
+      source: ImageSource.gallery
+    );
+
+    if(photo != null) {
+
+    }
+
+    setState(() {});
+  }
+
+  _takePhoto () {
+
+
 
   }
 }
