@@ -156,10 +156,14 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-  _selectPhoto () async {
+  _selectPhoto () => _processPhoto(ImageSource.gallery);
+
+  _takePhoto ()  => _processPhoto(ImageSource.camera);
+
+  _processPhoto(ImageSource imageSource) async {
 
     photo = await ImagePicker.pickImage(
-      source: ImageSource.gallery
+      source: imageSource
     );
 
     if(photo != null) {
@@ -167,11 +171,5 @@ class _ProductPageState extends State<ProductPage> {
     }
 
     setState(() {});
-  }
-
-  _takePhoto () {
-
-
-
   }
 }
