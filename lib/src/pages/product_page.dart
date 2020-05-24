@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:validacion_formularios/src/models/product_model.dart';
+import 'package:validacion_formularios/src/providers/product_provider.dart';
 import 'package:validacion_formularios/src/utils/utils.dart' as utils;
 
 class ProductPage extends StatefulWidget {
@@ -9,11 +10,18 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final formkey = GlobalKey<FormState>();
+  final productProvider = ProductProvider();
 
   ProductModel product = ProductModel();
+  bool isToUpdate;
 
   @override
   Widget build(BuildContext context) {
+
+    final ProductModel prodData = ModalRoute.of(context).settings.arguments;
+    isToUpdate = prodData != null;
+    if ( isToUpdate )  product = prodData;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Producto'),
@@ -89,13 +97,15 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _sumbitButton() {
 
+    String label = isToUpdate ? 'Actualizar' : 'Crear';
+
     return RaisedButton.icon(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
       color: Colors.deepPurple,
       textColor: Colors.white,
-      label: Text('Guardar'),
+      label: Text(label),
       icon: Icon(Icons.save),
       onPressed: _submit,
     );
@@ -108,9 +118,9 @@ class _ProductPageState extends State<ProductPage> {
 
     formkey.currentState.save();
 
-    print('Title: ${product.title}');
-    print('Price: ${product.price}');
-    print('Available: ${product.available}');
+    (product.id == null) ? 
+      productProvider.createProduct(product) :
+      productProvider.updateProduct(product);
 
   }
 }
