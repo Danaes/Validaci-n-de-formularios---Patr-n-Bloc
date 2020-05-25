@@ -18,6 +18,7 @@ class _ProductPageState extends State<ProductPage> {
 
   ProductModel product = ProductModel();
   bool _isToUpdate;
+  bool _saving = false;
   File photo;
 
   @override
@@ -114,7 +115,7 @@ class _ProductPageState extends State<ProductPage> {
       textColor: Colors.white,
       label: Text(label),
       icon: Icon(Icons.save),
-      onPressed: _submit,
+      onPressed: (_saving) ? null : _submit ,
     );
 
   }
@@ -125,13 +126,19 @@ class _ProductPageState extends State<ProductPage> {
 
     formkey.currentState.save();
 
+    setState(() { _saving = true; });
+
+    if (photo != null) {
+      product.photoUrl = await productProvider.uploadImage(photo);
+    }
+
     if (product.id == null)
       productProvider.createProduct(product);
     else
       productProvider.updateProduct(product);
 
     showSnackBar('Producto guardado correctamente');
-    Navigator.pushNamed(context, 'home');
+    Navigator.pop(context);
 
   }
 
@@ -147,7 +154,14 @@ class _ProductPageState extends State<ProductPage> {
 
   Widget _photoField() {
 
-    if( product.photoUrl != null) return Container();
+    if( product.photoUrl != null)
+      return FadeInImage(
+        placeholder: AssetImage('assets/original.gif'), 
+        image: NetworkImage(product.photoUrl),
+        height: 300.0,
+        width: double.infinity,
+        fit: BoxFit.fill,
+      );
 
     return Image(
       image: AssetImage(photo?.path ?? 'assets/no-image.png'),
@@ -167,7 +181,7 @@ class _ProductPageState extends State<ProductPage> {
     );
 
     if(photo != null) {
-
+        product.photoUrl = null;
     }
 
     setState(() {});

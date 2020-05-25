@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:validacion_formularios/src/bloc/provider.dart';
-import 'package:validacion_formularios/src/home_page.dart';
-import 'package:validacion_formularios/src/login_page.dart';
-import 'package:validacion_formularios/src/pages/product_page.dart';
+
+import 'src/bloc/provider.dart';
+import 'src/pages/home_page.dart';
+import 'src/pages/login_page.dart';
+import 'src/pages/product_page.dart';
  
 void main() => runApp(MyApp());
  

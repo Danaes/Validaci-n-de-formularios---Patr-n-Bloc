@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:validacion_formularios/src/bloc/provider.dart';
 import 'package:validacion_formularios/src/models/product_model.dart';
 import 'package:validacion_formularios/src/providers/product_provider.dart';
 
-import 'bloc/provider.dart';
 
 class HomePage extends StatelessWidget {
 
@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final bloc = Provider.of(context);
+    Provider.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -59,6 +59,22 @@ class HomePage extends StatelessWidget {
         title: Text(product.title),
         subtitle: Text(product.price.toString()),
         onTap: () => Navigator.pushNamed(context, 'product', arguments: product),
+        leading: Container(
+          width: 75.0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15.0),
+            child: (product.photoUrl == null) ?
+              Image(
+                image: AssetImage('assets/no-image.png'),
+                fit: BoxFit.fill,
+              ) :
+              FadeInImage(
+                image: NetworkImage(product.photoUrl),
+                placeholder: AssetImage('assets/original.gif'),
+                fit: BoxFit.fill,
+              ),
+          )
+        )
       ),
     );
 
