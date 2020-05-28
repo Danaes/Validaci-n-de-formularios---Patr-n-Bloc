@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:validacion_formularios/src/bloc/provider.dart';
 import 'package:validacion_formularios/src/models/product_model.dart';
-import 'package:validacion_formularios/src/providers/product_provider.dart';
 import 'package:validacion_formularios/src/utils/utils.dart' as utils;
 
 class ProductPage extends StatefulWidget {
@@ -14,8 +14,8 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   final formkey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  final productProvider = ProductProvider();
 
+  ProductBloc productBloc;
   ProductModel product = ProductModel();
   bool _isToUpdate;
   bool _saving = false;
@@ -23,6 +23,8 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    productBloc = Provider.productBloc(context);
 
     final ProductModel prodData = ModalRoute.of(context).settings.arguments;
     _isToUpdate = prodData != null;
@@ -129,16 +131,16 @@ class _ProductPageState extends State<ProductPage> {
     setState(() { _saving = true; });
 
     if (photo != null) {
-      product.photoUrl = await productProvider.uploadImage(photo);
+      product.photoUrl = await productBloc.uploadPhoto(photo);
     }
 
     if (product.id == null)
-      productProvider.createProduct(product);
+      productBloc.addProduct(product);
     else
-      productProvider.updateProduct(product);
+      productBloc.updateProduct(product);
 
     showSnackBar('Producto guardado correctamente');
-    Navigator.pop(context);
+    Navigator.of(context).pushNamedAndRemoveUntil('home', (Route<dynamic> route) => false);
 
   }
 

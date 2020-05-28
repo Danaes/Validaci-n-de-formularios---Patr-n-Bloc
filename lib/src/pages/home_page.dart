@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:validacion_formularios/src/bloc/product_bloc.dart';
 import 'package:validacion_formularios/src/bloc/provider.dart';
 import 'package:validacion_formularios/src/models/product_model.dart';
-import 'package:validacion_formularios/src/providers/product_provider.dart';
 
 
 class HomePage extends StatelessWidget {
-
-  final productProvider =  ProductProvider();
 
   @override
   Widget build(BuildContext context) {
 
     Provider.of(context);
-
+    final productBloc = Provider.productBloc(context);
+    productBloc.getProduct();
+    
     return Scaffold(
       appBar: AppBar(
         title: Text('Inicio'),
       ),
-      body: _listProduct(),
+      body: _listProduct(productBloc),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.deepPurple,
         child: Icon(Icons.add), 
@@ -26,10 +26,10 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _listProduct() {
+  Widget _listProduct(ProductBloc productBloc) {
 
-    return FutureBuilder(
-      future: productProvider.getProducts(),
+    return StreamBuilder(
+      stream: productBloc.productsStream,
       builder: (BuildContext context, AsyncSnapshot<List<ProductModel>> snapshot) {
 
         if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
@@ -38,23 +38,21 @@ class HomePage extends StatelessWidget {
 
         return ListView.builder(
           itemCount: products.length,
-          itemBuilder: (context, i) => _itemProduct(context, products[i]),
+          itemBuilder: (context, i) => _itemProduct(context, products[i], productBloc),
         );
       }
     );
 
   }
 
-  Widget _itemProduct(BuildContext context, ProductModel product) {
+  Widget _itemProduct(BuildContext context, ProductModel product, ProductBloc productBloc) {
 
     return Dismissible(
       key: UniqueKey(),
       background: Container(
         color: Colors.redAccent
       ),
-      onDismissed: (direction) {
-        productProvider.removeProduct(product.id);
-      },
+      onDismissed: (direction) => productBloc.removeProduct(product.id),
       child: ListTile(
         title: Text(product.title),
         subtitle: Text(product.price.toString()),

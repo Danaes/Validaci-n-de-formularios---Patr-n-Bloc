@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:validacion_formularios/src/bloc/login_bloc.dart';
 import 'package:validacion_formularios/src/bloc/product_bloc.dart';
+export 'package:validacion_formularios/src/bloc/product_bloc.dart';
 export 'package:validacion_formularios/src/bloc/login_bloc.dart';
 
 class Provider extends InheritedWidget{

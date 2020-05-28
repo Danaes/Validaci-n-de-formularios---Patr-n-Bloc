@@ -14,7 +14,7 @@ class ProductBloc {
   Stream<List<ProductModel>> get productsStream => _productController.stream;
   Stream<bool> get loading => _loadingController.stream;
 
-  void loadingProduct() async {
+  void getProduct() async {
 
     final products = await _productProvider.getProducts();
     _productController.sink.add(products);
