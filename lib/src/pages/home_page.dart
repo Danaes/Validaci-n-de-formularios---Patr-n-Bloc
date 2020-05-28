@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:validacion_formularios/src/bloc/product_bloc.dart';
 import 'package:validacion_formularios/src/bloc/provider.dart';
 import 'package:validacion_formularios/src/models/product_model.dart';
+import 'package:validacion_formularios/src/preferences/user_preference.dart';
 
 
 class HomePage extends StatelessWidget {
 
+  static final String routeName = 'home';
+  final prefs = new UserPreference();
+
   @override
   Widget build(BuildContext context) {
+
+    prefs.ultimaPagina = HomePage.routeName;
 
     Provider.of(context);
     final productBloc = Provider.productBloc(context);

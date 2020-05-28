@@ -1,30 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:validacion_formularios/src/bloc/login_bloc.dart';
 import 'package:validacion_formularios/src/bloc/provider.dart';
-import 'package:validacion_formularios/src/preferences/user_preference.dart';
 import 'package:validacion_formularios/src/providers/user_provider.dart';
+
 import 'package:validacion_formularios/src/utils/utils.dart' as utils;
 
-class LoginPage extends StatefulWidget {
 
-  static final String routeName = 'login';
+class SingupPage extends StatelessWidget {
 
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   final _userProvider = UserProvider();
-  
-  final prefs = new UserPreference();
-
-  bool _saving = false;
 
   @override
   Widget build(BuildContext context) {
-
-    prefs.ultimaPagina = LoginPage.routeName;
-
     return Scaffold(
       body:  Stack(
         children: <Widget>[
@@ -101,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             child: Column(
               children: <Widget>[
-                Text('Iniciar sesión', style: TextStyle(fontSize: 20.0),),
+                Text('Crear cuenta', style: TextStyle(fontSize: 20.0),),
                 SizedBox(height: 60.0),
                 _crearEmail(bloc),
                 SizedBox(height: 30.0),
@@ -113,8 +100,8 @@ class _LoginPageState extends State<LoginPage> {
           ),
         
           FlatButton(
-            child: Text('Crear una nueva cuenta', style: TextStyle(color: Colors.deepPurple)),
-            onPressed: () => Navigator.pushReplacementNamed(context, 'singup'),
+            child: Text('¿Ya tienes una cuenta?', style: TextStyle(color: Colors.deepPurple)),
+            onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
           ),
           SizedBox(height: 100.0),
         ],
@@ -175,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
         return RaisedButton(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-            child: Text('Iniciar sesion'),
+            child: Text('Crear cuenta'),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5.0)
@@ -183,21 +170,18 @@ class _LoginPageState extends State<LoginPage> {
           elevation: 0.0,
           color: Colors.deepPurple,
           textColor: Colors.white,
-          onPressed: (snapshot.hasData && !_saving) ? () => _login(bloc, context) : null,
+          onPressed: snapshot.hasData ? () => _singup(bloc, context) : null,
         );
       });
   }
 
-  void _login(LoginBloc bloc, BuildContext context) async {
+  _singup(LoginBloc bloc, BuildContext context) async{
 
-    setState(() { _saving = true; });
-
-    Map info = await _userProvider.login(bloc.email, bloc.password);
+    Map info = await _userProvider.singup(bloc.email, bloc.password);
 
     if(info['ok']) Navigator.pushReplacementNamed(context, 'home');
-    else {
-      setState(() { _saving = false; });
-      utils.showAlert(context, info['msg']);
-    }
+    else utils.showAlert(context, info['msg']);
+
   }
+
 }
